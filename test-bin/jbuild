@@ -1,0 +1,5 @@
+(executables
+ ((names (raises))
+  (libraries (core))))
+
+(enforce_style ())
