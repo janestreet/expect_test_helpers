@@ -4,7 +4,7 @@ open! Core.Std
 open! Async.Std
 open! Import
 
-include Expect_test_helpers_kernel.Helpers.S
+include Expect_test_helpers_kernel.S
 
 (** [with_temp_dir f] creates a temporary directory which is fed to [f].  The directory
     is removed after [f] exits. *)

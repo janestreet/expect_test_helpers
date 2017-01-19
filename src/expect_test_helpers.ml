@@ -1,7 +1,7 @@
 open Core.Std
 open! Async.Std
 
-include Expect_test_helpers_kernel.Helpers.Make (Async.Std)
+include Expect_test_helpers_kernel.Make(Async.Std)
 
 let run
       ?(enable_ocaml_backtraces = false)
@@ -106,5 +106,5 @@ let show_raise' (type a) ?hide_positions (f : unit -> a Deferred.t) =
 module Expect_test_config = struct
   include Async.Std.Expect_test_config
 
-  let run f = Expect_test_helpers_kernel.Std.Expect_test_config.run (fun () -> run f)
+  let run f = Expect_test_helpers_kernel.Expect_test_config.run (fun () -> run f)
 end
