@@ -98,7 +98,8 @@ let show_raise' (type a) ?hide_positions (f : unit -> a Deferred.t) =
   Monitor.detach_and_iter_errors monitor ~f:(fun exn ->
     print_s ?hide_positions [%message "Raised after return" ~_:(exn : exn)]);
   let%map result =
-    Scheduler.within' ~monitor (fun () -> Monitor.try_with ~rest:`Raise f)
+    Scheduler.within' ~monitor (fun () ->
+      Monitor.try_with ~extract_exn:true ~rest:`Raise f)
   in
   show_raise ?hide_positions (fun () -> Result.ok_exn result)
 ;;
