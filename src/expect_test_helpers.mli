@@ -1,6 +1,6 @@
 (** An extension of [Expect_test_helpers_kernel] with Async-aware functions. *)
 
-open! Core.Std
+open! Core
 open! Async.Std
 open! Import
 
