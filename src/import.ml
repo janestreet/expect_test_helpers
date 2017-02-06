@@ -2,4 +2,4 @@
 module Expect_test_config_lib = Expect_test_config
 
 open! Core
-open! Async.Std
+open! Async

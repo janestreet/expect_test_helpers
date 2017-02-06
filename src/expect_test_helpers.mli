@@ -1,7 +1,7 @@
 (** An extension of [Expect_test_helpers_kernel] with Async-aware functions. *)
 
 open! Core
-open! Async.Std
+open! Async
 open! Import
 
 include Expect_test_helpers_kernel.S
