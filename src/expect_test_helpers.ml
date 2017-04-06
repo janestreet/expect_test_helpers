@@ -107,5 +107,11 @@ let show_raise' (type a) ?hide_positions (f : unit -> a Deferred.t) =
 module Expect_test_config = struct
   include Async.Expect_test_config
 
-  let run f = Expect_test_helpers_kernel.Expect_test_config.run (fun () -> run f)
+  (** We wrap [Async.Expect_test_config.run] to get [Expect_test_helpers_kernel]'s
+      nice error message if [f] raises (synchronously or asynchronously). *)
+  let run (f : unit -> unit Deferred.t) =
+    Expect_test_helpers_kernel.Expect_test_config.run (fun () ->
+      Async.Expect_test_config.run (fun () ->
+        Writer.with_synchronous_out_channel (force Writer.stdout) Out_channel.stdout ~f))
+  ;;
 end
