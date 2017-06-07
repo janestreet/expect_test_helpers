@@ -93,15 +93,44 @@ let within_temp_dir ?(links = []) f =
       Unix.chdir cwd))
 ;;
 
-let show_raise' (type a) ?hide_positions (f : unit -> a Deferred.t) =
+let try_with f ~rest =
   let monitor = Monitor.create () in
   Monitor.detach_and_iter_errors monitor ~f:(fun exn ->
-    print_s ?hide_positions [%message "Raised after return" ~_:(exn : exn)]);
+    rest (Monitor.extract_exn exn));
+  Scheduler.within' ~monitor (fun () ->
+    Monitor.try_with ~extract_exn:true ~rest:`Raise f)
+;;
+
+let show_raise' (type a) ?hide_positions (f : unit -> a Deferred.t) =
   let%map result =
-    Scheduler.within' ~monitor (fun () ->
-      Monitor.try_with ~extract_exn:true ~rest:`Raise f)
+    try_with f ~rest:(fun exn ->
+      print_s ?hide_positions [%message "Raised after return" ~_:(exn : exn)])
   in
   show_raise ?hide_positions (fun () -> Result.ok_exn result)
+;;
+
+let require_does_not_raise' (type a) ?cr ?hide_positions ?show_backtrace here f =
+  let%map result =
+    try_with f ~rest:(fun exn ->
+      require here false ?cr ?hide_positions
+        ~if_false_then_print_s:(lazy [%message "Raised after return" ~_:(exn  : exn)]))
+  in
+  require_does_not_raise ?cr ?hide_positions ?show_backtrace here (fun () ->
+    ignore (Result.ok_exn result : a))
+;;
+
+let require_does_raise' ?cr ?hide_positions ?show_backtrace here f =
+  let%map result =
+    try_with f ~rest:(fun exn ->
+      (* It's not clear what do if we get exceptions after the deferred is
+         returned... Just printing out "Raised after return" for now. *)
+      print_s ?hide_positions [%message
+        "Raised after return"
+          ~_:(here : Source_code_position.t)
+          ~_:(exn  : exn)])
+  in
+  require_does_raise ?cr ?hide_positions ?show_backtrace here (fun () ->
+    Result.ok_exn result)
 ;;
 
 module Expect_test_config = struct
