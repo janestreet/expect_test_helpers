@@ -112,8 +112,8 @@ let show_raise' (type a) ?hide_positions (f : unit -> a Deferred.t) =
 let require_does_not_raise' (type a) ?cr ?hide_positions ?show_backtrace here f =
   let%map result =
     try_with f ~rest:(fun exn ->
-      require here false ?cr ?hide_positions
-        ~if_false_then_print_s:(lazy [%message "Raised after return" ~_:(exn  : exn)]))
+      print_cr here ?cr ?hide_positions
+        [%message "Raised after return" ~_:(exn  : exn)])
   in
   require_does_not_raise ?cr ?hide_positions ?show_backtrace here (fun () ->
     ignore (Result.ok_exn result : a))
