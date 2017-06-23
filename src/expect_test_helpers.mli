@@ -60,15 +60,13 @@ val show_raise'
   -> unit Deferred.t
 
 (** [require_does_not_raise'] is like [require_does_not_raise], but for functions that
-    produce a deferred result.  Unlike [require_does_not_raise], the return value does not
-    need to be [unit], as the [Deferred.t] type cannot result from a partial
-    application. *)
+    produce a deferred result. *)
 val require_does_not_raise'
   :  ?cr             : CR.t (** default is [CR]    *)
   -> ?hide_positions : bool (** default is [false] *)
   -> ?show_backtrace : bool (** default is [false] *)
   -> Source_code_position.t
-  -> (unit -> _ Deferred.t)
+  -> (unit -> unit Deferred.t)
   -> unit Deferred.t
 
 (** [require_does_raise'] is like [require_does_raise], but for functions that produce a
