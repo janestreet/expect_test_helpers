@@ -119,17 +119,23 @@ let require_does_not_raise' ?cr ?hide_positions ?show_backtrace here f =
     Result.ok_exn result)
 ;;
 
-let require_does_raise' ?cr ?hide_positions ?show_backtrace here f =
+let require_does_raise'
+      ?(cr             = CR.CR)
+      ?(hide_positions = CR.hide_unstable_output cr)
+      ?show_backtrace
+      here
+      f
+  =
   let%map result =
     try_with f ~rest:(fun exn ->
       (* It's not clear what do if we get exceptions after the deferred is
          returned... Just printing out "Raised after return" for now. *)
-      print_s ?hide_positions [%message
+      print_s ~hide_positions [%message
         "Raised after return"
           ~_:(here : Source_code_position.t)
           ~_:(exn  : exn)])
   in
-  require_does_raise ?cr ?hide_positions ?show_backtrace here (fun () ->
+  require_does_raise ~cr ~hide_positions ?show_backtrace here (fun () ->
     Result.ok_exn result)
 ;;
 

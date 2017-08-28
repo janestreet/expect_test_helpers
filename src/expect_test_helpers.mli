@@ -62,8 +62,8 @@ val show_raise'
 (** [require_does_not_raise'] is like [require_does_not_raise], but for functions that
     produce a deferred result. *)
 val require_does_not_raise'
-  :  ?cr             : CR.t (** default is [CR]    *)
-  -> ?hide_positions : bool (** default is [false] *)
+  :  ?cr             : CR.t (** default is [CR] *)
+  -> ?hide_positions : bool (** default is [false] when [cr=CR], [true] otherwise *)
   -> ?show_backtrace : bool (** default is [false] *)
   -> Source_code_position.t
   -> (unit -> unit Deferred.t)
@@ -72,8 +72,8 @@ val require_does_not_raise'
 (** [require_does_raise'] is like [require_does_raise], but for functions that produce a
     deferred result. *)
 val require_does_raise'
-  :  ?cr             : CR.t (** default is [CR]    *)
-  -> ?hide_positions : bool (** default is [false] *)
+  :  ?cr             : CR.t (** default is [CR] *)
+  -> ?hide_positions : bool (** default is [false] when [cr=CR], [true] otherwise *)
   -> ?show_backtrace : bool (** default is [false] *)
   -> Source_code_position.t
   -> (unit -> _ Deferred.t)
