@@ -23,14 +23,15 @@ val within_temp_dir
   -> (unit -> 'a Deferred.t)
   -> 'a Deferred.t
 
-(** [run ?stdin prog args] creates a child process that runs [prog], with arguments [args]
-    and its stdin coming from [stdin].  No expansion or escaping is done to [args] or
-    [stdin].  The child process's stdout and stderr are captured separately for
-    comparison. *)
+(** [run prog args] creates a child process that runs [prog], with arguments [args], its
+    environment extended with [extend_env] and its stdin coming from [stdin].  No
+    expansion or escaping is done to [args] or [stdin].  The child process's stdout and
+    stderr are captured separately for comparison. *)
 val run
-  :  ?enable_ocaml_backtraces : bool (** default is [false] *)
-  -> ?hide_positions          : bool (** default is [false] *)
-  -> ?print_cmdline           : bool (** default is [false] *)
+  :  ?enable_ocaml_backtraces : bool                    (** default is [false] *)
+  -> ?extend_env              : (string * string) list  (** default is [] *)
+  -> ?hide_positions          : bool                    (** default is [false] *)
+  -> ?print_cmdline           : bool                    (** default is [false] *)
   -> ?stdin                   : string
   -> string
   -> string list

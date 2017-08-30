@@ -5,12 +5,17 @@ include Expect_test_helpers_kernel.Make(Async)
 
 let run
       ?(enable_ocaml_backtraces = false)
+      ?(extend_env = [])
       ?(hide_positions = false)
-      ?(print_cmdline = false) ?stdin prog args =
+      ?(print_cmdline = false)
+      ?stdin
+      prog
+      args =
   let env =
-    if enable_ocaml_backtraces
-    then None
-    else Some (`Extend [ "OCAMLRUNPARAM", "" ])
+    `Extend (
+      if enable_ocaml_backtraces
+      then extend_env
+      else ( "OCAMLRUNPARAM", "" ) :: extend_env)
   in
   if print_cmdline then begin
     let cmdline = prog :: args in
@@ -18,7 +23,7 @@ let run
     | None       -> print_s [%message "run" (cmdline : string list)];
     | Some stdin -> print_s [%message "run" (cmdline : string list) (stdin : string)];
   end;
-  match%bind Process.create ?env ~prog ~args () with
+  match%bind Process.create ~env ~prog ~args () with
   | Error error ->
     print_s [%message "Process creation failed"
                         (prog:string) (args:string list) (error:Error.t)];
