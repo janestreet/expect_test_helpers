@@ -33,6 +33,7 @@ val run
   -> ?hide_positions          : bool                    (** default is [false] *)
   -> ?print_cmdline           : bool                    (** default is [false] *)
   -> ?stdin                   : string
+  -> ?working_dir             : string
   -> string
   -> string list
   -> unit Deferred.t

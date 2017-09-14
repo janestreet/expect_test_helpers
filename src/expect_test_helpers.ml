@@ -9,6 +9,7 @@ let run
       ?(hide_positions = false)
       ?(print_cmdline = false)
       ?stdin
+      ?working_dir
       prog
       args =
   let env =
@@ -23,10 +24,13 @@ let run
     | None       -> print_s [%message "run" (cmdline : string list)];
     | Some stdin -> print_s [%message "run" (cmdline : string list) (stdin : string)];
   end;
-  match%bind Process.create ~env ~prog ~args () with
+  match%bind Process.create ?working_dir ~env ~prog ~args () with
   | Error error ->
     print_s [%message "Process creation failed"
-                        (prog:string) (args:string list) (error:Error.t)];
+                        (prog : string)
+                        (args : string list)
+                        (working_dir : string sexp_option)
+                        (error : Error.t)];
     return ()
   | Ok process ->
     begin match stdin with
