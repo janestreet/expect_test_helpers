@@ -1,6 +1,7 @@
 (library
  ((name        expect_test_helpers)
   (public_name expect_test_helpers)
+  (flags (:standard -safe-string))
   (libraries (
     core
     async
