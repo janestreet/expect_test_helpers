@@ -4,7 +4,9 @@ open! Core
 open! Async
 open! Import
 
-include Expect_test_helpers_kernel.S
+include
+  (module type of struct include Expect_test_helpers_kernel end
+    with module Expect_test_config := Expect_test_helpers_kernel.Expect_test_config)
 
 (** [with_temp_dir f] creates a temporary directory which is fed to [f].  The directory
     is removed after [f] exits. *)

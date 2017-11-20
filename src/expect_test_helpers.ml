@@ -1,7 +1,10 @@
 open Core
 open! Async
 
-include Expect_test_helpers_kernel.Make(Async)
+include
+  (Expect_test_helpers_kernel
+   : (module type of struct include Expect_test_helpers_kernel end
+       with module Expect_test_config := Expect_test_helpers_kernel.Expect_test_config))
 
 let run
       ?(enable_ocaml_backtraces = false)
@@ -155,7 +158,6 @@ module Expect_test_config = struct
       nice error message if [f] raises (synchronously or asynchronously). *)
   let run (f : unit -> unit Deferred.t) =
     Expect_test_helpers_kernel.Expect_test_config.run (fun () ->
-      Async.Expect_test_config.run (fun () ->
-        Writer.with_synchronous_out_channel (force Writer.stdout) Out_channel.stdout ~f))
+      Async.Expect_test_config.run f)
   ;;
 end
