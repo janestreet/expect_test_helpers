@@ -1,10 +1,7 @@
 open Core
 open! Async
 
-include
-  (Expect_test_helpers_kernel
-   : (module type of struct include Expect_test_helpers_kernel end
-       with module Expect_test_config := Expect_test_helpers_kernel.Expect_test_config))
+include Expect_test_helpers_kernel
 
 let run
       ?(enable_ocaml_backtraces = false)
@@ -151,13 +148,4 @@ let require_does_raise'
     Result.ok_exn result)
 ;;
 
-module Expect_test_config = struct
-  include Async.Expect_test_config
-
-  (** We wrap [Async.Expect_test_config.run] to get [Expect_test_helpers_kernel]'s
-      nice error message if [f] raises (synchronously or asynchronously). *)
-  let run (f : unit -> unit Deferred.t) =
-    Expect_test_helpers_kernel.Expect_test_config.run (fun () ->
-      Async.Expect_test_config.run f)
-  ;;
-end
+module Expect_test_config = Async.Expect_test_config

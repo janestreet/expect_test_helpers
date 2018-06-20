@@ -4,9 +4,7 @@ open! Core
 open! Async
 open! Import
 
-include
-  (module type of struct include Expect_test_helpers_kernel end
-    with module Expect_test_config := Expect_test_helpers_kernel.Expect_test_config)
+include module type of struct include Expect_test_helpers_kernel end
 
 (** [with_temp_dir f] creates a temporary directory which is fed to [f].  The directory
     is removed after [f] exits. *)
@@ -85,9 +83,5 @@ val require_does_raise'
 
 (** We export [Expect_test_config] so that the [%expect] syntax uses Async, to prevent a
     confusing situation in which one is using [Expect_test_helpers] functions, which
-    expect Async to be running, but Async isn't running.  Also, we override
-    [Expect_test_config.run f] so that, if [f ()] raises, [run] prints the exception
-    rather than raising.  Printing works better with the expect-test workflow than an
-    unhandled exception, because there is a [.corrected] file that one can accept and
-    inspect. *)
-module Expect_test_config : Expect_test_config_lib.S with type 'a IO.t = 'a Deferred.t
+    expect Async to be running, but Async isn't running. *)
+module Expect_test_config = Async.Expect_test_config
