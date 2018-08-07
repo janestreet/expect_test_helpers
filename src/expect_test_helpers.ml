@@ -7,7 +7,10 @@ let run
       ?(enable_ocaml_backtraces = false)
       ?(extend_env = [])
       ?(hide_positions = false)
+      ?(postprocess = Fn.id)
       ?(print_cmdline = false)
+      ?(print_stdout = true)
+      ?(print_stderr = true)
       ?stdin
       ?working_dir
       prog
@@ -45,14 +48,14 @@ let run
       then string
       else hide_positions_in_string string
     in
-    let stdout = maybe_hide_positions stdout in
-    let stderr = maybe_hide_positions stderr in
-    print_string stdout;
+    let stdout = maybe_hide_positions stdout |> postprocess in
+    let stderr = maybe_hide_positions stderr |> postprocess  in
+    (if print_stdout then print_string stdout);
     (match exit_status with
      | Ok () -> ()
      | Error err ->
        print_s [%message "Unclean exit" ~_:(err : Unix.Exit_or_signal.error)]);
-    (if not (String.is_empty stderr)
+    (if print_stderr && not (String.is_empty stderr)
      then begin
        print_endline "--- STDERR ---";
        print_string stderr;

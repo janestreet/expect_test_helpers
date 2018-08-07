@@ -31,7 +31,10 @@ val run
   :  ?enable_ocaml_backtraces : bool                    (** default is [false] *)
   -> ?extend_env              : (string * string) list  (** default is [] *)
   -> ?hide_positions          : bool                    (** default is [false] *)
+  -> ?postprocess             : (string -> string)      (** default is [Fn.id] *)
   -> ?print_cmdline           : bool                    (** default is [false] *)
+  -> ?print_stdout            : bool                    (** default is [true] *)
+  -> ?print_stderr            : bool                    (** default is [true] *)
   -> ?stdin                   : string
   -> ?working_dir             : string
   -> string
