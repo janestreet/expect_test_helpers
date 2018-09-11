@@ -17,7 +17,12 @@ val with_temp_dir : (string -> 'a Deferred.t) -> 'a Deferred.t
     3. For each [file, `In_temp_as, name] in [links], links [file] as $T/[name].
 
     It then [cd]s to $T and calls [f].  After [f] exits, it [cd]s back, removes the
-    temporary directory, and restores the original PATH. *)
+    temporary directory, and restores the original PATH.
+
+    The links that [within_temp_dir] creates are hard links, to ensure that files remain
+    available and unchanged even if jenga starts to rebuild while the test is running.
+    Hard linking fails if [file] and $T are not on the same file system; we have no plans
+    to change this behavior. *)
 val within_temp_dir
   :  ?links : (string * [ `In_path_as | `In_temp_as ] * string) list
   -> (unit -> 'a Deferred.t)

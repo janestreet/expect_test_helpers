@@ -95,8 +95,6 @@ let within_temp_dir ?(links = []) f =
           | `In_path_as -> "bin" ^/ link_as
           | `In_temp_as -> link_as
         in
-        (* We use hard links to ensure that files remain available and unchanged even if
-           jenga starts to rebuild while the test is running. *)
         run "/bin/ln" [ "-T"; file; temp_dir ^/ link_as ])
     in
     let%bind () = Unix.chdir temp_dir in
