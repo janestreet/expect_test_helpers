@@ -4,7 +4,9 @@ open! Core
 open! Async
 open! Import
 
-include module type of struct include Expect_test_helpers_kernel end
+include module type of struct
+  include Expect_test_helpers_kernel
+end
 
 (** [with_temp_dir f] creates a temporary directory which is fed to [f].  The directory
     is removed after [f] exits. *)
@@ -24,7 +26,7 @@ val with_temp_dir : (string -> 'a Deferred.t) -> 'a Deferred.t
     Hard linking fails if [file] and $T are not on the same file system; we have no plans
     to change this behavior. *)
 val within_temp_dir
-  :  ?links : (string * [ `In_path_as | `In_temp_as ] * string) list
+  :  ?links:(string * [`In_path_as | `In_temp_as] * string) list
   -> (unit -> 'a Deferred.t)
   -> 'a Deferred.t
 
@@ -33,15 +35,15 @@ val within_temp_dir
     expansion or escaping is done to [args] or [stdin].  The child process's stdout and
     stderr are captured separately for comparison. *)
 val run
-  :  ?enable_ocaml_backtraces : bool                    (** default is [false] *)
-  -> ?extend_env              : (string * string) list  (** default is [] *)
-  -> ?hide_positions          : bool                    (** default is [false] *)
-  -> ?postprocess             : (string -> string)      (** default is [Fn.id] *)
-  -> ?print_cmdline           : bool                    (** default is [false] *)
-  -> ?print_stdout            : bool                    (** default is [true] *)
-  -> ?print_stderr            : bool                    (** default is [true] *)
-  -> ?stdin                   : string
-  -> ?working_dir             : string
+  :  ?enable_ocaml_backtraces:bool (** default is [false] *)
+  -> ?extend_env:(string * string) list (** default is [] *)
+  -> ?hide_positions:bool (** default is [false] *)
+  -> ?postprocess:(string -> string) (** default is [Fn.id] *)
+  -> ?print_cmdline:bool (** default is [false] *)
+  -> ?print_stdout:bool (** default is [true] *)
+  -> ?print_stderr:bool (** default is [true] *)
+  -> ?stdin:string
+  -> ?working_dir:string
   -> string
   -> string list
   -> unit Deferred.t
@@ -52,10 +54,10 @@ val run
     stdin is never a tty, even if the stdin of this process is a tty, and the child
     shell's stderr is never copied to this process's stderr. *)
 val system
-  :  ?enable_ocaml_backtraces : bool (** default is [true] *)
-  -> ?hide_positions          : bool (** default is [false] *)
-  -> ?print_cmdline           : bool (** default is [false] *)
-  -> ?stdin                   : string
+  :  ?enable_ocaml_backtraces:bool (** default is [true] *)
+  -> ?hide_positions:bool (** default is [false] *)
+  -> ?print_cmdline:bool (** default is [false] *)
+  -> ?stdin:string
   -> string
   -> unit Deferred.t
 
@@ -65,16 +67,16 @@ val system
     [print_s], to make output less fragile.  Once a result is returned, the rest of the
     errors are printed to stdout. *)
 val show_raise'
-  :  ?hide_positions : bool     (** default is [false] *)
+  :  ?hide_positions:bool (** default is [false] *)
   -> (unit -> _ Deferred.t)
   -> unit Deferred.t
 
 (** [require_does_not_raise'] is like [require_does_not_raise], but for functions that
     produce a deferred result. *)
 val require_does_not_raise'
-  :  ?cr             : CR.t (** default is [CR] *)
-  -> ?hide_positions : bool (** default is [false] when [cr=CR], [true] otherwise *)
-  -> ?show_backtrace : bool (** default is [false] *)
+  :  ?cr:CR.t (** default is [CR] *)
+  -> ?hide_positions:bool (** default is [false] when [cr=CR], [true] otherwise *)
+  -> ?show_backtrace:bool (** default is [false] *)
   -> Source_code_position.t
   -> (unit -> unit Deferred.t)
   -> unit Deferred.t
@@ -82,9 +84,9 @@ val require_does_not_raise'
 (** [require_does_raise'] is like [require_does_raise], but for functions that produce a
     deferred result. *)
 val require_does_raise'
-  :  ?cr             : CR.t (** default is [CR] *)
-  -> ?hide_positions : bool (** default is [false] when [cr=CR], [true] otherwise *)
-  -> ?show_backtrace : bool (** default is [false] *)
+  :  ?cr:CR.t (** default is [CR] *)
+  -> ?hide_positions:bool (** default is [false] when [cr=CR], [true] otherwise *)
+  -> ?show_backtrace:bool (** default is [false] *)
   -> Source_code_position.t
   -> (unit -> _ Deferred.t)
   -> unit Deferred.t
