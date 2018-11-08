@@ -84,6 +84,16 @@ let with_temp_dir f =
       else run "rm" [ "-rf"; dir ])
 ;;
 
+let hardlink_or_copy ~orig ~dst =
+  match%bind
+    Monitor.try_with ~extract_exn:true (fun () ->
+      Unix.link ~target:orig ~link_name:dst ())
+  with
+  | Ok () -> return ()
+  | Error (Unix.Unix_error (EXDEV, _, _)) -> run "cp" [ "-T"; "--"; orig; dst ]
+  | Error e -> raise e
+;;
+
 let within_temp_dir ?(links = []) f =
   let%bind cwd = Unix.getcwd () in
   with_temp_dir (fun temp_dir ->
@@ -99,7 +109,7 @@ let within_temp_dir ?(links = []) f =
           | `In_path_as -> "bin" ^/ link_as
           | `In_temp_as -> link_as
         in
-        run "/bin/ln" [ "-T"; file; temp_dir ^/ link_as ])
+        hardlink_or_copy ~orig:file ~dst:(temp_dir ^/ link_as))
     in
     let%bind () = Unix.chdir temp_dir in
     Monitor.protect f ~finally:(fun () ->
