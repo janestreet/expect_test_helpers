@@ -61,19 +61,19 @@ val system
   -> string
   -> unit Deferred.t
 
-(** [show_raise' ?hide_positions ?rest f] calls [f ()] and prints either the exception
-    raised by [f] or "did not raise".  [show_raise'] ignores the result of [f] so that one
-    doesn't have to put an [ignore] inside [f].  [~hide_positions] operates as in
-    [print_s], to make output less fragile.  Once a result is returned, the rest of the
-    errors are printed to stdout. *)
-val show_raise'
+(** [show_raise_async ?hide_positions ?rest f] calls [f ()] and prints either the
+    exception raised by [f] or "did not raise".  [show_raise_async] ignores the result of
+    [f] so that one doesn't have to put an [ignore] inside [f].  [~hide_positions]
+    operates as in [print_s], to make output less fragile.  Once a result is returned, the
+    rest of the errors are printed to stdout. *)
+val show_raise_async
   :  ?hide_positions:bool (** default is [false] *)
   -> (unit -> _ Deferred.t)
   -> unit Deferred.t
 
-(** [require_does_not_raise'] is like [require_does_not_raise], but for functions that
-    produce a deferred result. *)
-val require_does_not_raise'
+(** [require_does_not_raise_async] is like [require_does_not_raise], but for functions
+    that produce a deferred result. *)
+val require_does_not_raise_async
   :  ?cr:CR.t (** default is [CR] *)
   -> ?hide_positions:bool (** default is [false] when [cr=CR], [true] otherwise *)
   -> ?show_backtrace:bool (** default is [false] *)
@@ -81,9 +81,9 @@ val require_does_not_raise'
   -> (unit -> unit Deferred.t)
   -> unit Deferred.t
 
-(** [require_does_raise'] is like [require_does_raise], but for functions that produce a
-    deferred result. *)
-val require_does_raise'
+(** [require_does_raise_async] is like [require_does_raise], but for functions that
+    produce a deferred result. *)
+val require_does_raise_async
   :  ?cr:CR.t (** default is [CR] *)
   -> ?hide_positions:bool (** default is [false] when [cr=CR], [true] otherwise *)
   -> ?show_backtrace:bool (** default is [false] *)

@@ -123,7 +123,7 @@ let try_with f ~rest =
   Scheduler.within' ~monitor (fun () -> Monitor.try_with ~extract_exn:true ~rest:`Raise f)
 ;;
 
-let show_raise' (type a) ?hide_positions (f : unit -> a Deferred.t) =
+let show_raise_async (type a) ?hide_positions (f : unit -> a Deferred.t) =
   let%map result =
     try_with f ~rest:(fun exn ->
       print_s ?hide_positions [%message "Raised after return" ~_:(exn : exn)])
@@ -131,7 +131,7 @@ let show_raise' (type a) ?hide_positions (f : unit -> a Deferred.t) =
   show_raise ?hide_positions (fun () -> Result.ok_exn result)
 ;;
 
-let require_does_not_raise' ?cr ?hide_positions ?show_backtrace here f =
+let require_does_not_raise_async ?cr ?hide_positions ?show_backtrace here f =
   let%map result =
     try_with f ~rest:(fun exn ->
       print_cr here ?cr ?hide_positions [%message "Raised after return" ~_:(exn : exn)])
@@ -140,7 +140,7 @@ let require_does_not_raise' ?cr ?hide_positions ?show_backtrace here f =
     Result.ok_exn result)
 ;;
 
-let require_does_raise'
+let require_does_raise_async
       ?(cr = CR.CR)
       ?(hide_positions = CR.hide_unstable_output cr)
       ?show_backtrace
