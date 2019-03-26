@@ -34,7 +34,7 @@ let run
         "Process creation failed"
           (prog : string)
           (args : string list)
-          (working_dir : string sexp_option)
+          (working_dir : (string option[@sexp.option]))
           (error : Error.t)];
     return ()
   | Ok process ->
