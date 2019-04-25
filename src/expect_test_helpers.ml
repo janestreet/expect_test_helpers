@@ -2,14 +2,22 @@ open Core
 open! Async
 include Expect_test_helpers_kernel
 
+module Print_rule = struct
+  type t =
+    | Always
+    | If_unclean_exit
+    | Never
+  [@@deriving sexp_of]
+end
+
 let run
       ?(enable_ocaml_backtraces = false)
       ?(extend_env = [])
       ?(hide_positions = false)
       ?(postprocess = Fn.id)
       ?(print_cmdline = false)
-      ?(print_stdout = true)
-      ?(print_stderr = true)
+      ?(print_stdout = Print_rule.Always)
+      ?(print_stderr = Print_rule.Always)
       ?stdin
       ?working_dir
       prog
@@ -47,11 +55,16 @@ let run
     in
     let stdout = maybe_hide_positions stdout |> postprocess in
     let stderr = maybe_hide_positions stderr |> postprocess in
-    if print_stdout then print_string stdout;
+    let should_print : Print_rule.t -> bool = function
+      | Always -> true
+      | If_unclean_exit -> Result.is_error exit_status
+      | Never -> false
+    in
+    if should_print print_stdout then print_string stdout;
     (match exit_status with
      | Ok () -> ()
      | Error err -> print_s [%message "Unclean exit" ~_:(err : Unix.Exit_or_signal.error)]);
-    if print_stderr && not (String.is_empty stderr)
+    if should_print print_stderr && not (String.is_empty stderr)
     then (
       print_endline "--- STDERR ---";
       print_string stderr);

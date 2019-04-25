@@ -30,6 +30,14 @@ val within_temp_dir
   -> (unit -> 'a Deferred.t)
   -> 'a Deferred.t
 
+module Print_rule : sig
+  type t =
+    | Always
+    | If_unclean_exit
+    | Never
+  [@@deriving sexp_of]
+end
+
 (** [run prog args] creates a child process that runs [prog], with arguments [args], its
     environment extended with [extend_env] and its stdin coming from [stdin].  No
     expansion or escaping is done to [args] or [stdin].  The child process's stdout and
@@ -40,8 +48,8 @@ val run
   -> ?hide_positions:bool (** default is [false] *)
   -> ?postprocess:(string -> string) (** default is [Fn.id] *)
   -> ?print_cmdline:bool (** default is [false] *)
-  -> ?print_stdout:bool (** default is [true] *)
-  -> ?print_stderr:bool (** default is [true] *)
+  -> ?print_stdout:Print_rule.t (** default is [Always] *)
+  -> ?print_stderr:Print_rule.t (** default is [Always] *)
   -> ?stdin:string
   -> ?working_dir:string
   -> string
