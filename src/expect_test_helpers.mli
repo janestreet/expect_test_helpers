@@ -4,6 +4,7 @@ open! Core
 open! Async
 open! Import
 
+(** @inline *)
 include module type of struct
   include Expect_test_helpers_kernel
 end
