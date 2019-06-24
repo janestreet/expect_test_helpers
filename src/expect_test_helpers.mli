@@ -27,7 +27,7 @@ val with_temp_dir : (string -> 'a Deferred.t) -> 'a Deferred.t
     are not on the same file system, [within_temp_dir] copies the files instead of
     creating hard links. *)
 val within_temp_dir
-  :  ?links:(string * [`In_path_as | `In_temp_as] * string) list
+  :  ?links:(string * [ `In_path_as | `In_temp_as ] * string) list
   -> (unit -> 'a Deferred.t)
   -> 'a Deferred.t
 
