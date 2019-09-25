@@ -27,7 +27,7 @@ let run
     `Extend
       (if enable_ocaml_backtraces
        then extend_env
-       else ("OCAMLRUNPARAM", "") :: extend_env)
+       else ("OCAMLRUNPARAM", "b=0") :: extend_env)
   in
   if print_cmdline
   then (
