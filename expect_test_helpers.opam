@@ -16,7 +16,7 @@ depends: [
   "expect_test_helpers_kernel"
   "ppx_jane"
   "sexp_pretty"
-  "dune"                       {build & >= "1.5.1"}
+  "dune"                       {>= "1.5.1"}
 ]
 synopsis: "Async helpers for writing expectation tests"
 description: "
