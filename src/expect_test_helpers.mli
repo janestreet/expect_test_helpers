@@ -31,6 +31,15 @@ val within_temp_dir
   -> (unit -> 'a Deferred.t)
   -> 'a Deferred.t
 
+(** Like [Ref.set_temporarily], but waits for a deferred function to finish. *)
+val set_temporarily_async : 'a ref -> 'a -> f:(unit -> 'b Deferred.t) -> 'b Deferred.t
+
+(** Like [Ref.sets_temporarily], but waits for a deferred function to finish. *)
+val sets_temporarily_async
+  :  Ref.And_value.t list
+  -> f:(unit -> 'a Deferred.t)
+  -> 'a Deferred.t
+
 module Print_rule : sig
   type t =
     | Always

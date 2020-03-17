@@ -130,6 +130,16 @@ let within_temp_dir ?(links = []) f =
       Unix.chdir cwd))
 ;;
 
+let sets_temporarily_async and_values ~f =
+  let restore_to = List.map and_values ~f:Ref.And_value.snapshot in
+  Ref.And_value.sets and_values;
+  Monitor.protect f ~finally:(fun () ->
+    Ref.And_value.sets restore_to;
+    return ())
+;;
+
+let set_temporarily_async r x ~f = sets_temporarily_async [ T (r, x) ] ~f
+
 let try_with f ~rest =
   let monitor = Monitor.create () in
   Monitor.detach_and_iter_errors monitor ~f:(fun exn -> rest (Monitor.extract_exn exn));
